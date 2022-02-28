@@ -1,0 +1,19 @@
+config wireguard 'vpn_1'
+	option address ''
+	option enabled '0'
+	option filename ''
+
+config wireguard 'vpn_2'
+	option address ''
+	option enabled '0'
+	option filename ''
+
+config wireguard 'vpn_3'
+	option address ''
+	option enabled '0'
+	option filename ''
+
+config wireguard 'vpn_4'
+	option address ''
+	option enabled '0'
+	option filename ''

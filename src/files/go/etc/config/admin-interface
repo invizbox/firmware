@@ -1,0 +1,33 @@
+config service 'ftux'
+	option devices 'true'
+	option home 'true'
+	option networks 'true'
+	option profiles 'true'
+	option support 'true'
+	option system 'true'
+
+config service 'onboarding'
+	option needed 'true'
+
+config local_network 'invizbox'
+	option dns_id 'opendns'
+
+config network 'lan_vpn1'
+	option enabled_2_4ghz 'true'
+	option enabled_5ghz 'false'
+	option name 'InvizBoxGo'
+	option profile_id '0'
+	option protocol_id 'openvpn_tcp_443'
+
+config network 'lan_tor'
+	option enabled_2_4ghz 'true'
+	option enabled_5ghz 'false'
+	option name ''
+	option profile_id ''
+
+config network 'lan_clear1'
+	option dns_id 'opendns'
+	option enabled_2_4ghz 'true'
+	option enabled_5ghz 'false'
+	option name ''
+	option profile_id ''

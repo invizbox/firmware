@@ -1,0 +1,2 @@
+config version 'version'
+	option firmware '@VERSION@'

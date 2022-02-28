@@ -1,0 +1,34 @@
+
+    # just in case
+sysctl -w net.ipv4.ip_forward=1
+
+    # local tor routing
+iptables -t nat -I OUTPUT -d 10.192.0.0/16 -p tcp --syn -j DNAT --to-destination 172.31.1.1:9040 -m comment --comment "!fw3 invizbox"
+
+    # allow instant MAC filtering (and not interested in maintaining established connections)
+forward_accept_connected_line=$(iptables -L FORWARD --line-numbers | grep "ACCEPT     all  --  anywhere             anywhere             ctstate RELATED,ESTABLISHED /\* !fw3 \*/" | cut -f 1 -d " ")
+iptables -D FORWARD ${forward_accept_connected_line}
+
+    # establish a base line to add our own commands
+forward_reject_line=$(iptables -L FORWARD --line-numbers | grep "reject     all  --  anywhere             anywhere             /\* !fw3 \*/" | cut -f 1 -d " ")
+
+    # clear1
+iptables -t nat -I POSTROUTING --out-interface wlan0 -j MASQUERADE -m comment --comment "!fw3 invizbox"
+iptables -I FORWARD ${forward_reject_line} -i br-lan_clear1 -o wlan0 -m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT -m comment --comment "!fw3 invizbox"
+iptables -I FORWARD ${forward_reject_line} -i wlan0 -o br-lan_clear1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT -m comment --comment "!fw3 invizbox"
+
+    # tor
+iptables -t nat -I PREROUTING -s 10.153.147.0/24 ! -d 10.153.147.1/21 -p tcp --syn -j DNAT --to-destination 172.31.1.1:9040 -m comment --comment "!fw3 invizbox"
+
+    # vpn1
+iptables -t nat -I POSTROUTING --out-interface tun1 -j MASQUERADE -m comment --comment "!fw3 invizbox"
+iptables -I FORWARD ${forward_reject_line} -i br-lan_vpn1 -o tun1 -m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT -m comment --comment "!fw3 invizbox"
+iptables -I FORWARD ${forward_reject_line} -i tun1 -o br-lan_vpn1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT -m comment --comment "!fw3 invizbox"
+
+    # network device communication
+iptables -t mangle -A PREROUTING -m connmark ! --mark 0 -j CONNMARK --restore-mark -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -m connmark ! --mark 0 -j ACCEPT -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -o br-lan_vpn1 -j CONNMARK --save-mark --mask 1 -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -o br-lan_tor -j CONNMARK --save-mark --mask 16 -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -o br-lan_clear1 -j CONNMARK --save-mark --mask 32 -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -j CONNMARK --restore-mark -m comment --comment "!fw3 invizbox"

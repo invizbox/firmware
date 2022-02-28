@@ -1,0 +1,4 @@
+config wireguard 'vpn_1'
+	option address ''
+	option enabled '0'
+	option filename ''

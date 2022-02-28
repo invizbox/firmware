@@ -1,0 +1,23 @@
+config system 'system'
+	option cronloglevel	'9'
+	option hostname 'invizbox'
+	option timezone 'UTC'
+	option zonename 'UTC'
+
+config rngd 'rngd'
+	option device '/dev/urandom'
+	option enabled '1'
+
+config timeserver 'ntp'
+	option enabled '1'
+	option interval '60'
+	list server '0.pool.ntp.org'
+	list server '1.pool.ntp.org'
+	list server '2.pool.ntp.org'
+	list server '3.pool.ntp.org'
+
+config led 'blue'
+	option default '0'
+	option name 'blue'
+	option sysfs 'invizbox:blue:power'
+	option trigger 'none'

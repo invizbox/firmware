@@ -1,0 +1,43 @@
+config interface 'loopback'
+	option device 'lo'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+	option proto 'static'
+
+config interface 'wan'
+	option ifname 'eth0.2'
+	option proto 'dhcp'
+
+config device 'br_lan'
+	option name 'br-lan'
+	option type 'bridge'
+	list ports 'eth0.1'
+
+config interface 'lan'
+	option device 'br-lan'
+	option ipaddr '10.101.0.1'
+	option netmask '255.255.255.0'
+	option proto 'static'
+
+config interface 'vpn_1'
+	option ifname 'tun1'
+	option proto 'none'
+
+config interface 'tor'
+	option ifname 'eth0.3'
+	option ipaddr '172.31.1.1'
+	option netmask '255.255.255.0'
+	option proto 'static'
+
+config route 'vpn1_to_local'
+	option interface 'loopback'
+	option target '127.0.0.0'
+	option netmask '255.0.0.0'
+	option table '1'
+
+config route 'local_vpn1_traffic'
+	option interface 'lan'
+	option target '10.101.0.0'
+	option netmask '255.255.255.0'
+	option gateway '0.0.0.0'
+	option table '1'
