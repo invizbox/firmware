@@ -20,13 +20,7 @@ case "${PLUTO_VERB}" in
         ip rule add from 10.101.0.0/24 table 1
         sysctl -w "net.ipv4.conf.${dev}.disable_policy=1"
         sysctl -w "net.ipv4.conf.${dev}.rp_filter=0"
-        wan_mtu=$(cat /sys/class/net/wlan0/mtu)
-        ping_mtu=$(expr ${wan_mtu} - 28)
-        ifconfig ${dev} mtu "${wan_mtu}" up
-        new_mtu=$(ping -s ${ping_mtu} -c1 -M do -I ${dev} 8.8.8.8 2>/dev/null | grep 'Frag needed' | awk '{print substr($11,0,length($11)-1)}')
-        if [ -n "${new_mtu}" ]; then
-            ifconfig ${dev} mtu ${new_mtu} up
-        fi
+        ifconfig ${dev} mtu 1422 up
         echo "up" > /tmp/openvpn/1/status
         ;;
     down-client)

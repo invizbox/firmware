@@ -26,7 +26,7 @@ iptables -I FORWARD ${forward_reject_line} -i br-lan_vpn1 -o tun1 -m conntrack -
 iptables -I FORWARD ${forward_reject_line} -i tun1 -o br-lan_vpn1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT -m comment --comment "!fw3 invizbox"
 
     # network device communication
-iptables -t mangle -A PREROUTING -m connmark ! --mark 0 -j CONNMARK --restore-mark -m comment --comment "!fw3 invizbox"
+iptables -t mangle -A FORWARD -m connmark ! --mark 0 -j CONNMARK --restore-mark -m comment --comment "!fw3 invizbox"
 iptables -t mangle -A FORWARD -m connmark ! --mark 0 -j ACCEPT -m comment --comment "!fw3 invizbox"
 iptables -t mangle -A FORWARD -o br-lan_vpn1 -j CONNMARK --save-mark --mask 1 -m comment --comment "!fw3 invizbox"
 iptables -t mangle -A FORWARD -o br-lan_tor -j CONNMARK --save-mark --mask 16 -m comment --comment "!fw3 invizbox"

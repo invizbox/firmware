@@ -1,7 +1,8 @@
 config system 'system'
-	option cronloglevel	'9'
+	option cronloglevel '9'
 	option hostname 'invizbox2'
 	option timezone 'UTC'
+	option ttylogin '1'
 	option zonename 'UTC'
 
 config rngd 'rngd'
